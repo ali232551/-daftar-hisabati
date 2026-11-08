@@ -1,3 +1,4 @@
+
 name: Build Daftar Hisabati APK
 
 on:
@@ -22,10 +23,11 @@ jobs:
           java-version: '17'
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Accept Android licenses
-        run: yes | sdkmanager --licenses
+        uses: android-actions/setup-android@v4
+        with:
+          accept-android-sdk-licenses: 'true'
+          log-accepted-android-sdk-licenses: 'false'
+          packages: 'platform-tools'
 
       - name: Install Android SDK
         run: |
@@ -39,12 +41,11 @@ jobs:
           gradle-version: '8.7'
 
       - name: Build APK
-        working-directory: daftar-hisabat
+        working-directory: daftar-hisabati
         run: gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: daftar-hisabati-apk
-          path: daftar-hisabat/app/build/outputs/apk/debug/app-debug.apk
-          
+          path: daftar-hisabati/app/build/outputs/apk/debug/app-debug.apk
