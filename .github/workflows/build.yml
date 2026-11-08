@@ -39,13 +39,20 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
-
       - name: Build APK
-        working-directory: daftar-hisabati
-        run: gradle assembleDebug
+        run: |
+          PROJECT_DIR=$(find . -type f \( -name settings.gradle -o -name settings.gradle.kts \) -print -quit | xargs dirname)
+          if [ -z "$PROJECT_DIR" ]; then
+            echo "Gradle project not found!"
+            find . -maxdepth 4 -type f | head -100
+            exit 1
+          fi
+          echo "Project directory: $PROJECT_DIR"
+          gradle -p "$PROJECT_DIR" assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: daftar-hisabati-apk
-          path: daftar-hisabati/app/build/outputs/apk/debug/app-debug.apk
+          path: '**/app/build/outputs/apk/debug/app-debug.apk'
+          if-no-files-found: error
